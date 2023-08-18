@@ -1,0 +1,12 @@
+<div class="container">
+  <h1 *ngIf="!authenticated">You must be logging to be able to join or create a game.</h1>
+  <div>
+    <h1>Join an existing game</h1>
+    <app-join-game-form></app-join-game-form>
+  </div>
+
+  <div>
+    <h1>Create a new game</h1>
+    <app-create-game-form></app-create-game-form>
+  </div>
+</div>

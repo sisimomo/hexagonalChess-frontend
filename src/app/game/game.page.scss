@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  .grid-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    app-warning {
+      position: absolute;
+      top: 25%;
+      transform: translateY(-50%);
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 300px;
+    }
+    app-piece-list {
+      &.left {
+        margin: auto 5px auto auto;
+      }
+      &.right {
+        margin: auto auto auto 5px;
+      }
+    }
+    ::ng-deep app-piece-list svg {
+      width: 40px;
+    }
+    .grid {
+      max-height: 73vh;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  app-piece-list {
+    display: none;
+  }
+}

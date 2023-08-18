@@ -1,0 +1,36 @@
+<svg:g [attr.transform]="'translate(' + translate.x + ',' + translate.y + ')'">
+  <polygon class="cell" [attr.points]="hexagonPath" [style.fill]="'var(--board-cell' + colorIndex + ')'"></polygon>
+  <polygon
+    class="overlay"
+    [ngClass]="{ selected: selected, highlighted: highlighted, moveHighlighted: moveHighlighted }"
+    [attr.points]="hexagonPath"
+  ></polygon>
+  <g
+    app-piece
+    [attr.transform]="
+      'translate(' +
+      ((width / 2) * -1 + (width - pieceWidth * pieceScale) / 2) +
+      ',' +
+      ((height / 2) * -1 + (height - pieceHeight * pieceScale) / 2) +
+      '), scale(' +
+      pieceScale +
+      ')'
+    "
+    *ngIf="pieceType !== undefined && PieceSide !== undefined"
+    #piece
+    [type]="pieceType!"
+    [side]="PieceSide!"
+  ></g>
+  <g class="coordinate">
+    <text transform="rotate(-90) translate(60, 0) rotate(90) rotate(0) translate(0,10)">
+      {{ coordinate.q }}
+    </text>
+    <text transform="rotate(-90) translate(-30, 52) rotate(90) rotate(0) translate(0,10)">
+      {{ coordinate.r }}
+    </text>
+    <text transform="rotate(-90) translate(-30, -52) rotate(90) rotate(0) translate(0,10)">
+      {{ coordinate.s }}
+    </text>
+  </g>
+  <polygon (click)="click()" class="clickableHexagon" [attr.points]="hexagonPath"></polygon>
+</svg:g>

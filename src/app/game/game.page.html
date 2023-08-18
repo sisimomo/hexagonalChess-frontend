@@ -1,0 +1,48 @@
+<div class="container">
+  <h1 *ngIf="userSide !== undefined && userSide !== null">
+    {{ 'You are playing the ' + (pieceSideEnum.WHITE === userSide ? 'White' : 'Black') + '.' }}
+  </h1>
+  <h1 *ngIf="userSide !== undefined && userSide === null">You are watching this game.</h1>
+  <h1 [ngStyle]="{ visibility: userSide !== undefined ? 'visible' : 'hidden' }">
+    <ng-container
+      *ngIf="this.gameAsStarted === true && userSide !== undefined && (gameModel!.state === gameStateEnum.IN_PROGRESS || gameModel!.state === gameStateEnum.WHITE_IN_CHECK || gameModel!.state === gameStateEnum.BLACK_IN_CHECK)"
+    >
+      <span *ngIf="userSide !== null &&gameModel!.sideTurn !== userSide"> Waiting the move of the opponent. </span>
+      <span *ngIf="userSide !== null &&gameModel!.sideTurn === userSide"> It's your turn! </span>
+      <span *ngIf="userSide === null"
+        >{{ 'It\'s the ' + (gameModel!.sideTurn === pieceSideEnum.WHITE ? 'White' : 'Black') + ' turn!' }}</span
+      >
+    </ng-container>
+  </h1>
+  <div class="grid-container">
+    <app-warning
+      *ngIf="userSide !== undefined && this.gameModel !== undefined && this.gameDto !== undefined"
+      [gameState]="this.gameModel!.state"
+      [gameFriendlyId]="this.gameDto!.friendlyId"
+      [gameStarted]="this.gameAsStarted!"
+      [userSide]="userSide"
+    ></app-warning>
+    <app-piece-list
+      class="left"
+      *ngIf="blackCapturedPieceTypes !== undefined"
+      [types]="blackCapturedPieceTypes"
+      [side]="pieceSideEnum.BLACK"
+    />
+    <svg class="grid" [attr.viewBox]="viewBox">
+      <g
+        app-cell
+        *ngFor="let cell of grid"
+        [colorIndex]="cell.colorIndex"
+        [translate]="cell.translation"
+        [coordinate]="cell.coordinate"
+        (hexagonClick)="onCellClick($event)"
+      ></g>
+    </svg>
+    <app-piece-list
+      class="right"
+      *ngIf="whiteCapturedPieceTypes !== undefined"
+      [types]="whiteCapturedPieceTypes"
+      [side]="pieceSideEnum.WHITE"
+    />
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div
+  role="group"
+  class="input-container"
+  [formGroup]="parts"
+  [attr.aria-labelledby]="_formField.getLabelId()"
+  (focusin)="onFocusIn($event)"
+  (focusout)="onFocusOut($event)"
+>
+  <input
+    class="input-element"
+    formControlName="first3"
+    size="3"
+    maxLength="3"
+    aria-label="First 3"
+    (input)="_handleInput(parts.controls.first3, last3)"
+    (paste)="_handlePaste($event)"
+    #first3
+  />
+  <span class="input-spacer">&ndash;</span>
+  <input
+    class="input-element"
+    formControlName="last3"
+    maxLength="3"
+    size="3"
+    aria-label="Last 3"
+    (input)="_handleInput(parts.controls.last3, undefined)"
+    (keyup.backspace)="autoFocusPrev(parts.controls.last3, first3)"
+    (paste)="_handlePaste($event)"
+    #last3
+  />
+</div>

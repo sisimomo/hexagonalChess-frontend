@@ -1,0 +1,8 @@
+<div class="container">
+  <h1>Your active Games:</h1>
+  <app-infinite-scroll-table
+    #allLoggedInUserGames
+    [columnDefs]="columnDefs"
+    [getData]="getData.bind(this)"
+  ></app-infinite-scroll-table>
+</div>

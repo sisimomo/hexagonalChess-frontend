@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+:root {
+  --board-cell0: #828ca4;
+  --board-cell1: #b9c2da;
+  --board-cell2: #e8edf9;
+  --black-piece-inner: #34364c;
+  --black-piece-stroke: #f4f7fa;
+  --white-piece-inner: #f4f7fa;
+  --white-piece-stroke: #34364c;
+}
+
+a {
+  color: #ce93d8;
+}

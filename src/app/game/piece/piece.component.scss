@@ -1,0 +1,17 @@
+.white {
+  .stroke {
+    fill: var(--white-piece-stroke);
+  }
+  .union {
+    fill: var(--white-piece-inner);
+  }
+}
+
+.black {
+  .stroke {
+    fill: var(--black-piece-stroke);
+  }
+  .union {
+    fill: var(--black-piece-inner);
+  }
+}

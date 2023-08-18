@@ -1,0 +1,11 @@
+<div class="container" [formGroup]="form">
+  <mat-form-field>
+    <mat-label>Game Friendly Id</mat-label>
+    <app-game-friendly-id-input formControlName="gameFriendlyId"></app-game-friendly-id-input>
+    <mat-icon matSuffix>fingerprint</mat-icon>
+    <mat-error *ngIf="this.form.get('gameFriendlyId')!.invalid">You must enter valid Game Friendly Id</mat-error>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="!authenticated || !this.form.valid">
+    Spectate
+  </button>
+</div>

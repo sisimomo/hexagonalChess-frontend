@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Select the type of piece that will replace your pawn.</h1>
+<div mat-dialog-content class="container">
+  <mat-card
+    *ngFor="let pieceType of allPieceTypeEnums"
+    (click)="onSelectCard(pieceType)"
+    [ngClass]="{'card-selected mat-elevation-z4': pieceType === data.selected}"
+  >
+    <span class="selection">
+      <mat-icon>check_circle</mat-icon>
+    </span>
+    <mat-card-header>
+      <mat-card-title>{{ convertToString(pieceType) }}</mat-card-title>
+    </mat-card-header>
+    <svg width="126" height="126" viewBox="0 0 126 126" fill="none">
+      <g app-piece #piece [type]="pieceType" [side]="data.pieceSide"></g>
+    </svg>
+  </mat-card>
+</div>
+<div mat-dialog-actions>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="data.selected === undefined"
+    [mat-dialog-close]="data.selected"
+    cdkFocusInitial
+  >
+    Promote
+  </button>
+</div>

@@ -1,0 +1,28 @@
+:host {
+  align-items: start;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: medium;
+}
+
+section > *:not(h1, h2, h3, ul) {
+  margin-left: 16px;
+}
+
+ul {
+  padding-left: 16px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 32px;
+  font-family: Roboto, sans-serif;
+  letter-spacing: 0.0125em;
+  margin: 0 0 16px;
+}
+
+img {
+  width: 350px;
+  max-width: 95%;
+}

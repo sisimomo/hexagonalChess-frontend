@@ -1,0 +1,131 @@
+<h1>Gliński's Chess Rules</h1>
+
+<p>
+  Gliński chess is a hexagonal chess variant that is played on a hexagonal grid rather than a traditional square grid.
+  The rules are similar to those of traditional chess, but with some adaptations to the hexagonal board.
+</p>
+
+<section>
+  <h2>Board Setup:</h2>
+  <ul>
+    <li>The game is played on a hexagonal grid consisting of 91 hexagons arranged in a honeycomb pattern.</li>
+    <li>
+      Each player has a set of pieces, including one king, one queen, two rooks, two knights, three bishops and nine
+      pawns.
+    </li>
+    <li>
+      The pieces are placed on the board as follows:
+      <br />
+      <img src="/assets/images/initial_positions.svg" />
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2>Piece Movements:</h2>
+  <section>
+    <h3>King:</h3>
+    <p>
+      Moves one step in any of the six hexagonal directions (North, Northeast, Southeast, South, Southwest, Northwest).
+    </p>
+    <p>Moves one step diagonally along the six diagonal lines emanating from its position.</p>
+    <p style="font-style: italic">Can't move to a square attacked by the opponent.</p>
+    <img src="/assets/images/king_movements.svg" />
+  </section>
+  <section>
+    <h3>Queen:</h3>
+    <p>
+      Moves any number of steps in any of the six hexagonal directions (North, Northeast, Southeast, South, Southwest,
+      Northwest).
+    </p>
+    <p>Moves any number of steps diagonally along the six diagonal lines emanating from its position.</p>
+    <img src="/assets/images/queen_movements.svg" />
+  </section>
+
+  <section>
+    <h3>Rook:</h3>
+    <p>
+      Moves any number of steps in any of the six hexagonal directions (North, Northeast, Southeast, South, Southwest,
+      Northwest).
+    </p>
+    <img src="/assets/images/rook_movements.svg" />
+  </section>
+
+  <section>
+    <h3>Bishop:</h3>
+    <p>Moves any number of steps diagonally along the six diagonal lines emanating from its position.</p>
+    <img src="/assets/images/bishop_movements.svg" />
+  </section>
+
+  <section>
+    <h3>Knight:</h3>
+    <p>
+      Moves in a two-step "L" shape: two hexagonal step in a straight direction followed by a hexagonal step at a 60°.
+    </p>
+    <p style="font-style: italic">Can jump over other pieces.</p>
+    <img src="/assets/images/knight_movements.svg" />
+  </section>
+
+  <section>
+    <h3>Pawn:</h3>
+    <ul>
+      <li>Moves one step forward in the direction pointed by the pawn's orientation.</li>
+      <li>Captures at a 60° in the direction pointed by the pawn's orientation.</li>
+      <li>On its first move, a pawn can choose to move two steps forward instead of one.</li>
+      <li>
+        If an opponent's pawn moves two steps forward from its starting position and lands adjacent to your pawn, your
+        pawn can capture it en passant, moving diagonally to the square that the opponent's pawn skipped over. This
+        capture can only be performed on the immediately following move and must be done immediately after the
+        opponent's pawn has moved two steps.
+      </li>
+    </ul>
+    <p style="font-style: italic">Pawns reaching the opponent's back row are promoted to any piece except a king.</p>
+    <img src="/assets/images/pawn_movements.svg" />
+  </section>
+</section>
+
+<section>
+  <h2>Objective:</h2>
+  <p>
+    The objective of the game is to checkmate your opponent's king, putting it in a position where it is under attack
+    and cannot escape capture on the next move.
+  </p>
+</section>
+
+<section>
+  <h2>Draw Conditions:</h2>
+  <ul>
+    <li>
+      <strong>Stalemate:</strong> If a player's king is not in check but they have no legal moves, the game is a
+      stalemate, resulting in a draw.
+    </li>
+    <li>
+      <strong>Insufficient Material:</strong> If both players have only a lone king or a king and a bishop/knight, with
+      no pawns. In these cases, the game is typically declared a draw because there isn't enough material to achieve
+      checkmate, as these combinations of pieces lack the necessary power to force a win.
+    </li>
+    <li>
+      <strong>Threefold Repetition:</strong> If the same position occurs three times with the same player to move and
+      the same possible moves, the game is a draw.
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2>Additional Notes:</h2>
+  <ul>
+    <li>
+      Hexagonal chess introduces some unique tactics and strategies due to the different movement patterns of the pieces
+      and the nature of the hexagonal board.
+    </li>
+    <li>
+      The center of the board is pivotal, as it has more connections to other hexagons than the edges, allowing for more
+      maneuverability.
+    </li>
+    <li>Players need to consider both diagonal and straight-line movement when planning their moves and attacks.</li>
+  </ul>
+  <p>
+    Remember that Gliński chess is just one of many hexagonal chess variants, and the movement patterns and rules may
+    vary in other versions of the game.
+  </p>
+</section>

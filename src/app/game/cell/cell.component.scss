@@ -1,0 +1,34 @@
+.coordinate text {
+  display: none;
+  font-size: 2em;
+  fill: blue;
+}
+
+.cell {
+  stroke: #000000;
+}
+
+.overlay {
+  display: none;
+
+  &.selected {
+    display: block;
+    fill: #ff0000;
+    opacity: 0.15;
+  }
+  &.highlighted {
+    display: block;
+    fill: #7b61ff;
+    opacity: 0.35;
+  }
+  &.moveHighlighted {
+    display: block;
+    fill: #61fcff;
+    opacity: 0.25;
+  }
+}
+
+.clickableHexagon {
+  fill: transparent;
+  pointer-events: all;
+}

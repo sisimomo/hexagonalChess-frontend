@@ -1,0 +1,30 @@
+.container {
+  width: 100%;
+  display: flex;
+  gap: 1em;
+  padding: 1em;
+  mat-card {
+    border: 2px solid transparent;
+    &.card-selected {
+      border: 2px solid #7b1fa2;
+    }
+    &.mat-elevation-z4 .selection {
+      opacity: 1;
+    }
+    &:hover .selection {
+      opacity: 1;
+    }
+    .selection {
+      opacity: 0.05;
+      cursor: pointer;
+      color: #7b1fa2;
+      background: #fff;
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      border-radius: 100%;
+      height: 24px;
+      width: 24px;
+    }
+  }
+}

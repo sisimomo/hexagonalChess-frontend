@@ -1,0 +1,23 @@
+<div *ngIf="item" class="container">
+  <mat-icon
+    *ngIf="item.icon"
+    [style.color]="item.color !== undefined ? item.color : 'unset'"
+    [style.background-color]="item.backgroundColor !== undefined ? item.backgroundColor : 'unset'"
+    [style.border-radius]="item.backgroundColor !== undefined ? '5px' : 'unset'"
+    [attr.aria-label]="item.text !== undefined ? item.text : null"
+    class="icon material-symbols-outlined"
+    >{{ item.icon }}</mat-icon
+  >
+  <span
+    *ngIf="item.text"
+    class="text"
+    [style.color]="
+      item.color !== undefined
+        ? item.overwriteTextColor !== undefined
+          ? item.overwriteTextColor
+          : item.color
+        : 'unset'
+    "
+    >{{ item.text }}</span
+  >
+</div>

@@ -1,0 +1,53 @@
+<div class="container">
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="toggleNavbar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Hexagonal Chess</span>
+    <span class="toolbar-item-spacer"></span>
+    <button *ngIf="!this.authenticated" (click)="onClickSignIn()" mat-button aria-label="Sign in">
+      <mat-icon>login</mat-icon>
+      Sign In
+    </button>
+    <ng-container *ngIf="this.authenticated">
+      <button mat-icon-button matTooltip="My Account" [matMenuTriggerFor]="userAccountMenu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userAccountMenu [overlapTrigger]="false" yPosition="below">
+        <button mat-menu-item (click)="onClickAccount()">
+          <mat-icon>settings</mat-icon><span>{{ username }}</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onClickLogout()"><mat-icon>exit_to_app</mat-icon>Logout</button>
+      </mat-menu>
+    </ng-container>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="body">
+    <mat-sidenav #sidenav mode="side" [opened]="isExpanded" [class.mat-elevation-z4]="true" class="sidenav">
+      <mat-nav-list>
+        <mat-list-item (click)="getCurrentPath() !== '/home' ? toggleNavbar() : undefined" routerLink="/home">
+          <div class="text-icon"><mat-icon>home</mat-icon><span>Home</span></div>
+        </mat-list-item>
+        <mat-list-item
+          (click)="getCurrentPath() !== '/create_join_game' ? toggleNavbar() : undefined"
+          routerLink="/create_join_game"
+        >
+          <div class="text-icon"><mat-icon>videogame_asset</mat-icon><span>Create/Join Game</span></div>
+        </mat-list-item>
+        <mat-list-item (click)="getCurrentPath() !== '/game_list' ? toggleNavbar() : undefined" routerLink="/game_list">
+          <div class="text-icon"><mat-icon>list</mat-icon><span>Games List</span></div>
+        </mat-list-item>
+        <mat-list-item
+          (click)="getCurrentPath() !== '/game_rules' ? toggleNavbar() : undefined"
+          routerLink="/game_rules"
+        >
+          <div class="text-icon"><mat-icon>rule</mat-icon><span>Game Rules</span></div>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <ng-content></ng-content>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

@@ -1,0 +1,13 @@
+<div class="container" [formGroup]="form">
+  <mat-slide-toggle formControlName="publicGame">Public game</mat-slide-toggle>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input matInput [type]="passwordHidden ? 'password' : 'text'" formControlName="password" />
+    <mat-icon matSuffix (click)="passwordHidden = !passwordHidden">{{
+      passwordHidden ? 'visibility_off' : 'visibility'
+    }}</mat-icon>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="!authenticated || !this.form.valid">
+    Create a new Game
+  </button>
+</div>
