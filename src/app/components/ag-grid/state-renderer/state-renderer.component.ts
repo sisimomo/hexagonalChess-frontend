@@ -34,7 +34,7 @@ export class StateRendererComponent<TData> implements ICellRendererAngularComp {
     if (params.items) {
       let item = params.items.find((item) => (item.condition !== undefined ? item.condition(params.data) : false));
       if (item === undefined) {
-        item = params.items.find((item) => typeof item.condition == 'undefined');
+        item = params.items.find((item) => typeof item.condition === 'undefined');
       }
       this.item = item;
     }

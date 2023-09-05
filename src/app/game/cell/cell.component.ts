@@ -1,8 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Coordinate, PieceSide, PieceType } from '../../common/engine/internal';
-import { Coordinate2D } from '../coordinate2D';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Coordinate } from 'src/app/common/engine/coordinate';
+import { PieceSide, PieceType } from 'src/app/common/engine/internal';
 import { PieceComponent } from '../piece/piece.component';
+import { Coordinate2D } from './coordinate2D';
+
+export class CellDef {
+  constructor(
+    public colorIndex: number,
+    public coordinate: Coordinate,
+    public translation: Coordinate2D,
+    public pieceType?: PieceType,
+    public pieceSide?: PieceSide,
+    public selected: boolean = false,
+    public moveHighlighted: boolean = false,
+    public lastMoveHighlighted: boolean = false
+  ) {}
+}
 
 @Component({
   selector: '[app-cell]',
@@ -12,18 +26,10 @@ import { PieceComponent } from '../piece/piece.component';
   styleUrls: ['./cell.component.scss'],
 })
 export class CellComponent {
-  @Input() public colorIndex: number;
-  @Input() public translate: Coordinate2D;
-  @Input() public coordinate: Coordinate;
+  @Input() public def: CellDef;
 
-  @Output() hexagonClick: EventEmitter<CellComponent> = new EventEmitter();
-  @ViewChild('piece') public piece?: PieceComponent;
-  public selected = false;
-  public highlighted = false;
-  public moveHighlighted = false;
-  protected hexagonPath = '100,0 50,-87 -50,-87 -100,0 -50,87 50,87';
-  protected pieceType?: PieceType;
-  protected PieceSide?: PieceSide;
+  @Output() hexagonClick: EventEmitter<CellDef> = new EventEmitter();
+  public static readonly HEXAGON_PATH = '100,0 50,-87 -50,-87 -100,0 -50,87 50,87';
 
   // https://www.redblobgames.com/grids/hexagons/#basics
   public static readonly WIDTH = 100 * 2;
@@ -31,37 +37,40 @@ export class CellComponent {
 
   public static readonly PIECE_SCALE = 1.15;
 
-  get width() {
+  protected get hexagonPath() {
+    return CellComponent.HEXAGON_PATH;
+  }
+
+  protected get width() {
     return CellComponent.WIDTH;
   }
 
-  get height() {
+  protected get height() {
     return CellComponent.HEIGHT;
   }
 
-  get pieceScale() {
+  protected get pieceScale() {
     return CellComponent.PIECE_SCALE;
   }
 
-  get pieceWidth() {
+  protected get pieceWidth() {
     return PieceComponent.WIDTH;
   }
 
-  get pieceHeight() {
+  protected get pieceHeight() {
     return PieceComponent.HEIGHT;
   }
 
+  protected get moveHighlightedClass() {
+    if (!this.def.moveHighlighted) {
+      return undefined;
+    }
+    return this.def.pieceType !== undefined && this.def.pieceSide !== undefined
+      ? 'captureMoveHighlighted'
+      : 'moveHighlighted';
+  }
+
   protected click() {
-    this.hexagonClick.emit(this);
-  }
-
-  public removePiece() {
-    this.pieceType = undefined;
-    this.PieceSide = undefined;
-  }
-
-  public setPiece(pieceType: PieceType, PieceSide: PieceSide) {
-    this.pieceType = pieceType;
-    this.PieceSide = PieceSide;
+    this.hexagonClick.emit(this.def);
   }
 }

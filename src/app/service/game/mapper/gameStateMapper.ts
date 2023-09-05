@@ -10,6 +10,10 @@ export class GameStateMapper {
         return GameState.WHITE_WON;
       case GameStateDto.BLACK_WON:
         return GameState.BLACK_WON;
+      case GameStateDto.WHITE_WON_BY_SURRENDER:
+        return GameState.WHITE_WON_BY_SURRENDER;
+      case GameStateDto.BLACK_WON_BY_SURRENDER:
+        return GameState.BLACK_WON_BY_SURRENDER;
       case GameStateDto.WHITE_IN_CHECK:
         return GameState.WHITE_IN_CHECK;
       case GameStateDto.BLACK_IN_CHECK:

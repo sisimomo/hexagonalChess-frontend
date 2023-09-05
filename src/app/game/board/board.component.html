@@ -1,0 +1,12 @@
+<svg [attr.viewBox]="viewBox">
+  <g app-cell *ngFor="let cell of cells" [def]="cell" (hexagonClick)="onCellClick($event)"></g>
+  <text
+    *ngFor="let legend of gridLegend"
+    class="legend"
+    [attr.transform]="'translate(' + legend.translation.x + ',' + legend.translation.y + ')'"
+    alignment-baseline="middle"
+    [attr.text-anchor]="legend.text.match('[A-Z-a-z]') ? 'middle' : 'end'"
+  >
+    {{ legend.text }}
+  </text>
+</svg>

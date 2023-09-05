@@ -6,3 +6,10 @@ export enum PieceType {
   QUEEN = 'Q',
   ROOK = 'R',
 }
+
+export function pieceTypeToPieceNotation(pieceType: PieceType): string {
+  if (pieceType === PieceType.PAWN) {
+    return '';
+  }
+  return pieceType;
+}

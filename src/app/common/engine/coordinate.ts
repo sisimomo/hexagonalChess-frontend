@@ -19,6 +19,34 @@ export class Coordinate {
     new Coordinate(1, 1, -2),
   ];
 
+  public static readonly FIRST_COORDINATE_OF_EACH_ROW = {
+    1: new Coordinate(-5, 5, 0),
+    2: new Coordinate(-5, 4, 1),
+    3: new Coordinate(-5, 3, 2),
+    4: new Coordinate(-5, 2, 3),
+    5: new Coordinate(-5, 1, 4),
+    6: new Coordinate(-5, 0, 5),
+    7: new Coordinate(-4, -1, 5),
+    8: new Coordinate(-3, -2, 5),
+    9: new Coordinate(-2, -3, 5),
+    10: new Coordinate(-1, -4, 5),
+    11: new Coordinate(0, -5, 5),
+  };
+
+  public static readonly FIRST_COORDINATE_OF_EACH_COLUMN: { [key: string]: Coordinate } = {
+    a: new Coordinate(-5, 5, 0),
+    b: new Coordinate(-4, 5, -1),
+    c: new Coordinate(-3, 5, -2),
+    d: new Coordinate(-2, 5, -3),
+    e: new Coordinate(-1, 5, -4),
+    f: new Coordinate(0, 5, -5),
+    g: new Coordinate(1, 4, -5),
+    h: new Coordinate(2, 3, -5),
+    i: new Coordinate(3, 2, -5),
+    j: new Coordinate(4, 1, -5),
+    k: new Coordinate(5, 0, -5),
+  };
+
   private readonly _q;
   private readonly _r;
   private readonly _s;
@@ -105,11 +133,35 @@ export class Coordinate {
     return (Math.abs(vec.q) + Math.abs(vec.r) + Math.abs(vec.s)) / 2;
   }
 
-  public equals(coordinate: Coordinate | undefined): boolean {
-    if (coordinate == null || coordinate == undefined) {
+  public get cellColumnNotation(): string {
+    let firstCoordinateOfColumn: Coordinate = this;
+    while (firstCoordinateOfColumn.r !== 5 && firstCoordinateOfColumn.s !== -5) {
+      firstCoordinateOfColumn = firstCoordinateOfColumn.add(Coordinate.DIRECTION_VECTORS[5]);
+    }
+    return Object.entries(Coordinate.FIRST_COORDINATE_OF_EACH_COLUMN).find((key) =>
+      firstCoordinateOfColumn.equals(key[1])
+    )![0];
+  }
+
+  public get cellRowNotation(): string {
+    let firstCoordinateOfRow: Coordinate = this;
+    while (firstCoordinateOfRow.q !== -5 && firstCoordinateOfRow.s !== 5) {
+      firstCoordinateOfRow = firstCoordinateOfRow.add(Coordinate.DIRECTION_VECTORS[3]);
+    }
+    return Object.entries(Coordinate.FIRST_COORDINATE_OF_EACH_ROW).find((key) =>
+      firstCoordinateOfRow.equals(key[1])
+    )![0];
+  }
+
+  public get cellNotation(): string {
+    return this.cellColumnNotation + this.cellRowNotation;
+  }
+
+  public equals(coordinate?: Coordinate): boolean {
+    if (coordinate === undefined) {
       return false;
     }
-    return this._q == coordinate.q && this._r == coordinate.r && this._s == coordinate.s;
+    return this._q === coordinate.q && this._r === coordinate.r && this._s === coordinate.s;
   }
 }
 

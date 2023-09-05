@@ -1,8 +1,8 @@
-import { GameOverException } from './exception/gameOverException';
 import {
   BOARD_SIDE_LENGTH,
   Bishop,
   Coordinate,
+  GameOverException,
   GameState,
   King,
   Knight,
@@ -18,6 +18,7 @@ import {
   Queen,
   Rook,
   WantedPromotionPieceTypeNotProvidedException,
+  pieceTypeToPieceNotation,
 } from './internal';
 
 export class Game {
@@ -34,26 +35,42 @@ export class Game {
 
   private _history: Piece[][];
 
-  public constructor(
-    state?: GameState,
-    sideTurn?: PieceSide,
-    lastMove?: LastMove | undefined,
-    pieces?: Piece[],
-    history?: Piece[][]
-  ) {
-    if (state !== undefined && sideTurn !== undefined && pieces !== undefined && history !== undefined) {
-      this._state = state;
-      this._sideTurn = sideTurn;
-      this._lastMove = lastMove;
-      this._pieces = Piece.clone(pieces);
-      this._history = history.map((h) => Piece.clone(h));
-    } else {
-      this._state = GameState.IN_PROGRESS;
-      this._sideTurn = PieceSide.WHITE;
-      this._pieces = Game.getInitialPiecesPositions();
-      this._history = [];
-    }
+  public static newGame() {
+    const newGame = new Game();
+    newGame._state = GameState.IN_PROGRESS;
+    newGame._sideTurn = PieceSide.WHITE;
+    newGame._pieces = Game.getInitialPiecesPositions();
+    newGame._history = [];
+    return newGame;
   }
+
+  public static fromExistingGame(
+    state: GameState,
+    sideTurn: PieceSide,
+    lastMove: LastMove | undefined,
+    pieces: Piece[],
+    history: Piece[][]
+  ) {
+    const newGame = new Game();
+    newGame._state = state;
+    newGame._sideTurn = sideTurn;
+    newGame._lastMove = lastMove;
+    newGame._pieces = Piece.clone(pieces);
+    newGame._history = history.map((h) => Piece.clone(h));
+    return newGame;
+  }
+
+  public static fromGamePreviousMove(history: Piece[][], moveIndex: number) {
+    const newGame = new Game();
+    newGame._sideTurn = moveIndex % 2 === 1 ? PieceSide.WHITE : PieceSide.BLACK;
+    newGame._history = history.slice(0, moveIndex - 1).map((pieces) => Piece.clone(pieces));
+    newGame._pieces = Piece.clone(history[moveIndex]);
+    newGame._lastMove = Game.getLastMove(moveIndex, newGame._history, newGame._pieces);
+    newGame.updateGameState();
+    return newGame;
+  }
+
+  private constructor() {}
 
   public get state(): GameState {
     return this._state;
@@ -75,31 +92,93 @@ export class Game {
     return this._history.map((h) => Piece.clone(h));
   }
 
-  /**
-   * Get the list of captured piece types for a given side in a
-   * chess game.
-   *
-   * @param pieceSide The side of the captured piece types.
-   * @returns List of captured piece types by
-   * the specified piece side.
-   */
-  public getCapturedPieceTypeList(pieceSide: PieceSide) {
-    const capturedPiecesType: PieceType[] = [];
-    for (let i = pieceSide === PieceSide.WHITE ? 2 : 1; i <= this._history.length; i += 2) {
+  public get moveHistory(): MoveHistory {
+    const moveHistory = {
+      white: [],
+      black: [],
+    } as MoveHistory;
+    if (this._history.length === 0) {
+      return moveHistory;
+    }
+    for (let i = 1; i < this._history.length + 1; i++) {
+      const pieceSide = i % 2 === 1 ? PieceSide.WHITE : PieceSide.BLACK;
       const previous = this._history[i - 1];
       const current = i < this._history.length ? this._history[i] : this.pieces;
-      const previousTypes = previous.filter((piece) => piece.side === pieceSide).map((piece) => piece.type);
-      const currentTypes = current.filter((piece) => piece.side === pieceSide).map((piece) => piece.type);
-      if (previousTypes.length !== currentTypes.length) {
-        const missingType = previousTypes.find(
-          (pType) =>
-            previousTypes.filter((type) => type === pType).length !==
-            currentTypes.filter((type) => type === pType).length
-        );
-        capturedPiecesType.push(missingType!);
+      const pieceMovedFromPrevious = previous
+        .filter((p) => p.side === pieceSide)
+        .find((p) => Piece.findPiece(current, p.type, pieceSide, p.coordinate) === undefined)!;
+      const pieceMovedFromCurrent = current
+        .filter((p) => p.side === pieceSide)
+        .find((p) => Piece.findPiece(previous, p.type, pieceSide, p.coordinate) === undefined)!;
+      const pieceSideInverse = pieceSide === PieceSide.WHITE ? PieceSide.BLACK : PieceSide.WHITE;
+      const pieceEaten = previous
+        .filter((p) => p.side === pieceSideInverse)
+        .find((p) => Piece.findPiece(current, p.type, pieceSideInverse, p.coordinate) === undefined);
+
+      const moveNotation = this.getMoveNotation(
+        i,
+        pieceSide,
+        previous,
+        current,
+        pieceMovedFromPrevious,
+        pieceMovedFromCurrent,
+        pieceEaten
+      );
+      moveHistory[pieceSide === PieceSide.WHITE ? 'white' : 'black'].push(moveNotation);
+    }
+    return moveHistory;
+  }
+
+  private getMoveNotation(
+    moveIndex: number,
+    pieceSide: PieceSide,
+    previous: Piece[],
+    current: Piece[],
+    pieceMovedFromPrevious: Piece,
+    pieceMovedFromCurrent: Piece,
+    pieceEaten?: Piece
+  ) {
+    const pieceSideInverse = pieceSide === PieceSide.WHITE ? PieceSide.BLACK : PieceSide.WHITE;
+    let moveNotation = pieceTypeToPieceNotation(pieceMovedFromPrevious.type);
+
+    const ambiguousPiece = Piece.findPieces(previous, pieceMovedFromPrevious.type, pieceMovedFromPrevious.side)
+      .filter((piece) => !piece.equals(pieceMovedFromPrevious))
+      ?.find((piece) =>
+        piece
+          .allPossibleMoves(previous, this.getLastMove(moveIndex - 1), true)
+          .find((coordinate) => coordinate.equals(pieceMovedFromCurrent.coordinate))
+      );
+    if (ambiguousPiece !== undefined) {
+      if (ambiguousPiece.coordinate.cellColumnNotation !== pieceMovedFromPrevious.coordinate.cellColumnNotation) {
+        moveNotation += pieceMovedFromPrevious.coordinate.cellColumnNotation;
+      } else if (ambiguousPiece.coordinate.cellRowNotation !== pieceMovedFromPrevious.coordinate.cellRowNotation) {
+        moveNotation += pieceMovedFromPrevious.coordinate.cellRowNotation;
+      } else {
+        moveNotation += pieceMovedFromPrevious.coordinate.cellNotation;
       }
     }
-    return capturedPiecesType;
+    if (pieceEaten !== undefined) {
+      if (pieceMovedFromPrevious.type === PieceType.PAWN) {
+        moveNotation += pieceMovedFromPrevious.coordinate.cellColumnNotation;
+      }
+      moveNotation += 'x';
+    }
+    moveNotation += pieceMovedFromCurrent.coordinate.cellNotation;
+    if (pieceMovedFromPrevious.type !== pieceMovedFromCurrent.type) {
+      moveNotation += '=' + pieceTypeToPieceNotation(pieceMovedFromCurrent.type);
+    }
+    const lastMove = {
+      from: pieceMovedFromPrevious.coordinate,
+      to: pieceMovedFromCurrent.coordinate,
+    } as LastMove;
+    if ((Piece.findPiece(current, PieceType.KING, pieceSideInverse) as King).isCheck(current, lastMove)) {
+      if ((Piece.findPiece(current, PieceType.KING, pieceSideInverse) as King).isCheckMate(current, lastMove)) {
+        moveNotation += '#';
+      } else {
+        moveNotation += '+';
+      }
+    }
+    return moveNotation;
   }
 
   /**
@@ -149,7 +228,7 @@ export class Game {
    * @param to The destination {@link Coordinate} where the {@link Piece} is being moved to.
    * @param wantedPromotionPieceType The type of piece that the pawn wants to be promoted to.
    */
-  public movePiece(from: Coordinate, to: Coordinate, wantedPromotionPieceType: PieceType | undefined): void {
+  public movePiece(from: Coordinate, to: Coordinate, wantedPromotionPieceType?: PieceType): void {
     if (this.isEnded()) {
       throw new GameOverException(this._state);
     }
@@ -165,7 +244,7 @@ export class Game {
     }
     if (piece instanceof Pawn && Pawn.getPossibleCoordinatesToPromote(piece.side).some((c) => c.equals(to))) {
       piece = this.promotesPawn(piece, wantedPromotionPieceType);
-    } else if (wantedPromotionPieceType != null) {
+    } else if (wantedPromotionPieceType !== undefined) {
       throw new PromotionNotAllowedException(piece, to);
     } else {
       this.addCurrentPiecesToHistory();
@@ -178,6 +257,18 @@ export class Game {
   }
 
   /**
+   * Set the game state to indicate that the game has ended by a user surrendering.
+   *
+   * @param pieceSide The side of the player who is surrendering.
+   */
+  public surrender(pieceSide: PieceSide) {
+    if (this.isEnded()) {
+      throw new GameOverException(this._state);
+    }
+    this._state = pieceSide === PieceSide.WHITE ? GameState.BLACK_WON_BY_SURRENDER : GameState.WHITE_WON_BY_SURRENDER;
+  }
+
+  /**
    * Promotes a pawn to a desired piece type and returns the new piece.
    *
    * @param pawn Represents the pawn piece that needs to be promoted.
@@ -185,7 +276,7 @@ export class Game {
    *        to.
    * @return The newly created {@link Piece}.
    */
-  private promotesPawn(pawn: Pawn, wantedPromotionPieceType: PieceType | undefined): Piece {
+  private promotesPawn(pawn: Pawn, wantedPromotionPieceType?: PieceType): Piece {
     if (wantedPromotionPieceType === undefined) {
       throw new WantedPromotionPieceTypeNotProvidedException();
     }
@@ -237,7 +328,7 @@ export class Game {
     }
   }
 
-  private isEnded() {
+  public isEnded() {
     return !(
       this._state === GameState.IN_PROGRESS ||
       this._state === GameState.WHITE_IN_CHECK ||
@@ -285,7 +376,7 @@ export class Game {
   }
 
   /**
-   * Checks if there is a threefold repetition in a game of chess.
+   * Checks if there is a threefold repetition in the game.
    *
    * @return A boolean value.
    */
@@ -331,6 +422,59 @@ export class Game {
   }
 
   /**
+   * Get the list of captured piece types for a given side in a
+   * chess game.
+   *
+   * @param pieceSide The side of the captured piece types.
+   * @return A list of {@link Piece} objects.
+   */
+  public getCapturedPieceTypeList(pieceSide: PieceSide) {
+    const capturedPiecesType: PieceType[] = [];
+    for (let i = pieceSide === PieceSide.WHITE ? 2 : 1; i <= this._history.length; i += 2) {
+      const previous = this._history[i - 1];
+      const current = i < this._history.length ? this._history[i] : this.pieces;
+      const previousTypes = previous.filter((piece) => piece.side === pieceSide).map((piece) => piece.type);
+      const currentTypes = current.filter((piece) => piece.side === pieceSide).map((piece) => piece.type);
+      if (previousTypes.length !== currentTypes.length) {
+        const missingType = previousTypes.find(
+          (pType) =>
+            previousTypes.filter((type) => type === pType).length !==
+            currentTypes.filter((type) => type === pType).length
+        );
+        capturedPiecesType.push(missingType!);
+      }
+    }
+    return capturedPiecesType;
+  }
+
+  /**
+   * Get the coordinates of the last move made in a chess game given an
+   * index in the game's history.
+   *
+   * @param moveIndex - The move position move. It is used to retrieve the last move made at that index.
+   * @returns The LastMove
+   */
+  public getLastMove(moveIndex: number) {
+    return Game.getLastMove(moveIndex, this._history, this._pieces);
+  }
+
+  private static getLastMove(moveIndex: number, history: Piece[][], pieces: Piece[]) {
+    if (moveIndex <= 0 || moveIndex > history.length) {
+      return undefined;
+    }
+    const pieceSide = moveIndex % 2 === 1 ? PieceSide.WHITE : PieceSide.BLACK;
+    const previous = history[moveIndex - 1];
+    const current = moveIndex < history.length ? history[moveIndex] : pieces;
+    const pieceMovedFromPrevious = previous
+      .filter((p) => p.side === pieceSide)
+      .find((p) => Piece.findPiece(current, p.type, pieceSide, p.coordinate) === undefined)!;
+    const pieceMovedFromCurrent = current
+      .filter((p) => p.side === pieceSide)
+      .find((p) => Piece.findPiece(previous, p.type, pieceSide, p.coordinate) === undefined)!;
+    return { from: pieceMovedFromPrevious.coordinate, to: pieceMovedFromCurrent.coordinate } as LastMove;
+  }
+
+  /**
    * Generates a string representation of the game object, including its state, side turn, last move,
    * pieces, and the game board.
    *
@@ -360,14 +504,14 @@ export class Game {
     // Middle
     piecesInRow = BOARD_SIDE_LENGTH;
     for (let row = 1; row < BOARD_SIDE_LENGTH * 2 - 2; row++) {
-      const growingDirection = row % 2 == 0 ? 1 : -1;
+      const growingDirection = row % 2 === 0 ? 1 : -1;
       piecesInRow += growingDirection;
       str += this.rowToString(piecesInRow, lastRowStartingCoordinate, growingDirection);
       lastRowStartingCoordinate = lastRowStartingCoordinate.add(this.getGrowingDirectionVector(growingDirection));
     }
     // Bottom
     for (piecesInRow = BOARD_SIDE_LENGTH; piecesInRow > 0; piecesInRow--) {
-      const growingDirection = piecesInRow == BOARD_SIDE_LENGTH ? 1 : -1;
+      const growingDirection = piecesInRow === BOARD_SIDE_LENGTH ? 1 : -1;
       str += this.rowToString(piecesInRow, lastRowStartingCoordinate, growingDirection);
       lastRowStartingCoordinate = lastRowStartingCoordinate.add(this.getGrowingDirectionVector(growingDirection));
     }
@@ -375,7 +519,7 @@ export class Game {
   }
 
   private getGrowingDirectionVector(growingDirection: number): Coordinate {
-    return growingDirection == 1 ? Coordinate.DIRECTION_VECTORS[4] : Coordinate.DIRECTION_VECTORS[0];
+    return growingDirection === 1 ? Coordinate.DIRECTION_VECTORS[4] : Coordinate.DIRECTION_VECTORS[0];
   }
 
   /**
@@ -424,4 +568,9 @@ export class Game {
     });
     return ' '.repeat(padding) + row.join(' '.repeat(Game.BOARD_TO_STRING_PIECE_SPACING));
   }
+}
+
+export interface MoveHistory {
+  white: string[];
+  black: string[];
 }

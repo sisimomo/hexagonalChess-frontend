@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { ToastrService } from 'ngx-toastr';
-import { onError } from 'src/app/common/utils/errorUtils';
+import { onHttpError } from 'src/app/common/utils/errorUtils';
 import { GameJoinUpdateDto } from 'src/app/service/game/dto/request/gameJoinUpdateDto';
 import { RestGameService } from 'src/app/service/game/restGame.service';
 
@@ -73,7 +73,7 @@ export class JoinGameFormComponent {
           // TODO: pass gameDto to game page
           this.router.navigate(['game', gameFriendlyId]);
         },
-        error: (err) => onError(this.toastr, err, 'An error occurred while joining a game.'),
+        error: (err) => onHttpError(this.toastr, err, 'An error occurred while joining a game.'),
       });
     }
   }

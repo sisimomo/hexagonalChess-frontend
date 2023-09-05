@@ -1,0 +1,22 @@
+<mat-card class="scrollable-content">
+  <mat-card-header>
+    <h2 *ngIf="userSide !== undefined && userSide === null">You are watching this game.</h2>
+    <h2 [ngStyle]="{ visibility: userSide !== undefined ? 'visible' : 'hidden' }">
+      <ng-container *ngIf="this.gameAsStarted === true && userSide !== undefined && !game.isEnded()">
+        <span *ngIf="userSide !== null && game.sideTurn !== userSide"> It's the opponent turn. </span>
+        <span *ngIf="userSide !== null && game.sideTurn === userSide"> It's your turn! </span>
+        <span *ngIf="userSide === null">{{
+          "It's the " + (game.sideTurn === pieceSideEnum.WHITE ? 'White' : 'Black') + ' turn!'
+        }}</span>
+      </ng-container>
+    </h2>
+  </mat-card-header>
+  <mat-card-content>
+    <app-piece-list [types]="whiteCapturedPieceTypes" [side]="pieceSideEnum.WHITE"></app-piece-list>
+    <app-history #history [game]="game"></app-history>
+    <app-piece-list [types]="blackCapturedPieceTypes" [side]="pieceSideEnum.BLACK"></app-piece-list>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button (click)="onResignButtonClick()" [disabled]="game.isEnded()">Resign</button>
+  </mat-card-actions>
+</mat-card>
