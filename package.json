@@ -30,7 +30,7 @@
     "keycloak-js": "^22.0.1",
     "ngx-toastr": "^17.0.2",
     "rxjs": "~7.8.0",
-    "tslib": "^2.6.1"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.0",
