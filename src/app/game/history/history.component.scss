@@ -1,0 +1,26 @@
+table {
+  border: rgba(255, 255, 255, 0.1) solid 1px;
+}
+::ng-deep table {
+  .mat-mdc-row {
+    height: fit-content;
+    &:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    .mat-column-white,
+    .mat-column-black {
+      font-weight: bold;
+    }
+    .mat-mdc-cell {
+      border-bottom: 1px solid transparent;
+      border-top: 1px solid transparent;
+      padding: 3px 0;
+      &:first-child {
+        padding-left: 8px;
+      }
+      &:last-child {
+        padding-right: 8px;
+      }
+    }
+  }
+}

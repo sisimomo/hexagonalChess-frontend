@@ -145,7 +145,7 @@ export class Pawn extends Piece {
     lastMove: LastMove | undefined,
     checkForSelfCheck: boolean
   ): Coordinate | undefined {
-    if (lastMove == null) {
+    if (lastMove === undefined) {
       return undefined;
     }
     const lastMovePiece = Piece.findPiece(
@@ -157,7 +157,7 @@ export class Pawn extends Piece {
     if (lastMovePiece === undefined) {
       return undefined;
     }
-    if (lastMovePiece.type !== PieceType.PAWN || lastMove.from.distance(lastMove.to) != 2) {
+    if (lastMovePiece.type !== PieceType.PAWN || lastMove.from.distance(lastMove.to) !== 2) {
       return undefined;
     }
     const diagonalDownVectors = [Coordinate.DIRECTION_VECTORS[0], Coordinate.DIRECTION_VECTORS[4]].map((c) =>

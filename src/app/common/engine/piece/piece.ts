@@ -89,9 +89,9 @@ export abstract class Piece {
    */
   public static findPiece(
     pieces: Piece[],
-    type: PieceType | undefined,
-    side: PieceSide | undefined,
-    coordinate: Coordinate | undefined
+    type?: PieceType,
+    side?: PieceSide,
+    coordinate?: Coordinate
   ): Piece | undefined {
     const p = Piece.findPieces(pieces, type, side).filter(
       (piece) => coordinate === undefined || piece.coordinate.equals(coordinate)
@@ -110,7 +110,7 @@ export abstract class Piece {
    * @param side The side of the piece you are looking for.
    * @return A {@link List} of {@link Piece} objects.
    */
-  public static findPieces(pieces: Piece[], type: PieceType | undefined, side: PieceSide | undefined): Piece[] {
+  public static findPieces(pieces: Piece[], type?: PieceType, side?: PieceSide): Piece[] {
     return pieces.filter(
       (piece) => (side === undefined || piece.side === side) && (type === undefined || piece.type === type)
     );
@@ -124,15 +124,15 @@ export abstract class Piece {
    * @return A boolean value.
    */
   public static listEquals(piecesA: Piece[], piecesB: Piece[]): boolean {
-    if (piecesA.length != piecesB.length) {
+    if (piecesA.length !== piecesB.length) {
       return false;
     }
     const sortFn = (a: Piece, b: Piece) => {
-      if (a.coordinate.q != b.coordinate.q) {
+      if (a.coordinate.q !== b.coordinate.q) {
         return a.coordinate.q - b.coordinate.q;
-      } else if (a.coordinate.r != b.coordinate.r) {
+      } else if (a.coordinate.r !== b.coordinate.r) {
         return a.coordinate.r - b.coordinate.r;
-      } else if (a.coordinate.s != b.coordinate.s) {
+      } else if (a.coordinate.s !== b.coordinate.s) {
         return a.coordinate.s - b.coordinate.s;
       }
       return 0;
@@ -158,11 +158,11 @@ export abstract class Piece {
    * @return A boolean value.
    */
   public static equals(piecesA: Piece, piecesB: Piece): boolean {
-    return piecesA == piecesB || (piecesA != null && piecesA.equals(piecesB));
+    return piecesA === piecesB || piecesA.equals(piecesB);
   }
 
   /**
-   * The function checks if a given move is valid using {@link #allPossibleMoves}.
+   * Checks if a given move is valid using {@link #allPossibleMoves}.
    *
    * @param to Represents the coordinate where the player wants to move a piece to on the game board.
    * @param piecesOnGameBoard The list of {@link Piece}s currently on the game board.
@@ -201,7 +201,7 @@ export abstract class Piece {
   ): Coordinate[];
 
   /**
-   * The function checks if a move would cause the player's own king to be in check.
+   * Checks if a move would cause the player's own king to be in check.
    *
    * @param to The coordinate where the piece is being moved to on the game board.
    * @param piecesOnGameBoard The list of {@link Piece}s currently on the game board.

@@ -7,7 +7,7 @@ import { GameStateMapper } from './gameStateMapper';
 
 export class GameSaveMapper {
   public static convertToModel(gameSaveDto: GameSaveDto): Game {
-    return new Game(
+    return Game.fromExistingGame(
       GameStateMapper.convertToModel(gameSaveDto.state),
       PieceSideMapper.convertToModel(gameSaveDto.sideTurn),
       gameSaveDto.lastMoveFrom !== undefined

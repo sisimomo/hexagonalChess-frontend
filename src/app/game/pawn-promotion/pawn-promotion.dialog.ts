@@ -17,9 +17,8 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-piece-type-dialog',
-  templateUrl: './piece-type-dialog.dialog.html',
-  styleUrls: ['./piece-type-dialog.dialog.scss'],
+  templateUrl: './pawn-promotion.dialog.html',
+  styleUrls: ['./pawn-promotion.dialog.scss'],
   standalone: true,
   imports: [
     CommonModule,

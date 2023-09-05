@@ -1,5 +1,4 @@
 .coordinate text {
-  display: none;
   font-size: 2em;
   fill: blue;
 }
@@ -10,18 +9,20 @@
 
 .overlay {
   display: none;
-
-  &.selected {
-    display: block;
-    fill: #ff0000;
-    opacity: 0.15;
-  }
-  &.highlighted {
+  &.selected,
+  &.moveHighlighted {
     display: block;
     fill: #7b61ff;
-    opacity: 0.35;
+    opacity: 0.5;
   }
-  &.moveHighlighted {
+  &.captureMoveHighlighted {
+    display: block;
+    fill: transparent;
+    stroke: #7b61ff;
+    stroke-width: 20px;
+    opacity: 0.5;
+  }
+  &.lastMoveHighlighted {
     display: block;
     fill: #61fcff;
     opacity: 0.25;

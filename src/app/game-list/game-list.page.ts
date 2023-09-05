@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ColDef, ModuleRegistry } from 'ag-grid-community';
 import { KeycloakService } from 'keycloak-angular';
 import { ToastrService } from 'ngx-toastr';
-import { onError } from '../common/utils/errorUtils';
+import { onHttpError } from '../common/utils/errorUtils';
 import { InfiniteScrollTableComponent } from '../components/ag-grid/infinite-scroll-table/infinite-scroll-table.component';
 import { MenuRendererComponent, MenuRendererParams } from '../components/ag-grid/menu-renderer/menu-renderer.component';
 import {
@@ -94,7 +94,7 @@ export class GameListPage implements OnInit {
             icon: 'login',
             text: 'Open',
             condition: (data) =>
-              data !== undefined && (data.whiteUserUuid === undefined || data.blackUserUuid === undefined),
+              data !== undefined && (data.whiteUserUuid === this.userUuid || data.blackUserUuid === this.userUuid),
           },
           {
             id: 'delete',
@@ -131,7 +131,7 @@ export class GameListPage implements OnInit {
         next: () => {
           this.allLoggedInUserGamesTable.refreshAllRows();
         },
-        error: (err) => onError(this.toastr, err, 'An error occurred while loading the game list.'),
+        error: (err) => onHttpError(this.toastr, err, 'An error occurred while loading the game list.'),
       });
     }
   }

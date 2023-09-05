@@ -5,7 +5,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent, IGetRowsParams, ModuleRegistry, RowModelType } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { onError } from 'src/app/common/utils/errorUtils';
+import { onHttpError } from 'src/app/common/utils/errorUtils';
 import { Direction } from 'src/app/service/common/dto/enumeration/direction';
 import { WindowDto } from 'src/app/service/common/dto/windowDto';
 
@@ -73,7 +73,7 @@ export class InfiniteScrollTableComponent<TData> {
       },
       error: (err) => {
         params.failCallback();
-        onError(this.toastr, err, 'An error occurred while loading games.');
+        onHttpError(this.toastr, err, 'An error occurred while loading games.');
       },
     });
   }

@@ -29,3 +29,4 @@ export * from './piece/pawn';
 export * from './piece/queen';
 export * from './piece/rook';
 export * from './game';
+export * from './exception/gameOverException';

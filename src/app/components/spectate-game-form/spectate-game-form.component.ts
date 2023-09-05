@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { ToastrService } from 'ngx-toastr';
-import { onError } from 'src/app/common/utils/errorUtils';
+import { onHttpError } from 'src/app/common/utils/errorUtils';
 import { RestGameService } from 'src/app/service/game/restGame.service';
 
 // Source: https://material.angular.io/components/form-field/examples#form-field-custom-control
@@ -69,7 +69,7 @@ export class JoinGameFormComponent {
           // TODO: pass gameDto to game page
           this.router.navigate(['game', gameFriendlyId]);
         },
-        error: (err) => onError(this.toastr, err, 'An error occurred while trying to spectate a game.'),
+        error: (err) => onHttpError(this.toastr, err, 'An error occurred while trying to spectate a game.'),
       });
     }
   }

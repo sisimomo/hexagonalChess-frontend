@@ -24,8 +24,8 @@ interface Message {
 })
 export class WarningComponent implements OnChanges, AfterViewInit {
   @ViewChild(ToastContainerDirective) private inlineToastContainer: ToastContainerDirective;
-  @Input() public gameStarted: boolean;
-  @Input() public gameFriendlyId: string;
+  @Input() public gameAsStarted: boolean;
+  @Input() public gameFriendlyId?: string;
   @Input() public gameState: GameState;
   @Input() public userSide: PieceSide | null;
   private onChanges = new ReplaySubject();
@@ -83,28 +83,36 @@ export class WarningComponent implements OnChanges, AfterViewInit {
     let message: string | undefined;
     let type = ToastType.WARNING;
 
-    if (!this.gameStarted) {
+    if (this.gameFriendlyId !== undefined && !this.gameAsStarted) {
       title = 'Waiting for an opponent to join the game';
       message = `The Friendly Id of this game is: <h2>${this.gameFriendlyId}</h2> You can give it to anyone along with the game password (if set) so they can join you.`;
       type = ToastType.INFO;
     } else {
+      const sideWhite = this.userSide === PieceSide.WHITE ? 'You' : 'White';
+      const sideBlack = this.userSide === PieceSide.BLACK ? 'You' : 'Black';
       switch (this.gameState) {
         case GameState.IN_PROGRESS:
           this.removeLastShown();
           return;
         case GameState.WHITE_IN_CHECK:
-          title = (this.userSide === PieceSide.WHITE ? 'You' : 'White') + ' are in check';
+          title = sideWhite + ' are in check';
           type = ToastType.INFO;
           break;
         case GameState.BLACK_IN_CHECK:
-          title = (this.userSide === PieceSide.BLACK ? 'You' : 'Black') + ' are in check';
+          title = sideBlack + ' are in check';
           type = ToastType.INFO;
           break;
         case GameState.WHITE_WON:
-          title = (this.userSide === PieceSide.WHITE ? 'You' : 'White') + ' WON';
+          title = sideWhite + ' WON';
           break;
         case GameState.BLACK_WON:
-          title = (this.userSide === PieceSide.BLACK ? 'You' : 'Black') + ' WON';
+          title = sideBlack + ' WON';
+          break;
+        case GameState.WHITE_WON_BY_SURRENDER:
+          title = `${sideWhite} WON, ${sideBlack.toLowerCase()} surrendered`;
+          break;
+        case GameState.BLACK_WON_BY_SURRENDER:
+          title = `${sideBlack} WON, ${sideWhite.toLowerCase()} surrendered`;
           break;
         case GameState.DRAW_STALEMATE:
           title = 'Stalemate Draw, nobody won';

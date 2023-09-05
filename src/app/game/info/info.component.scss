@@ -1,0 +1,33 @@
+mat-card {
+  width: 330px;
+  height: 100%;
+  &.scrollable-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    mat-card-header h2:empty {
+      display: none;
+    }
+
+    mat-card-content {
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      app-history {
+        overflow: auto;
+        flex-grow: 1;
+      }
+      ::ng-deep app-piece-list svg {
+        width: 35px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .scrollable-content mat-card-content ::ng-deep app-piece-list svg {
+    width: 20px !important;
+  }
+}

@@ -77,6 +77,6 @@ export class Coordinate2D {
     if (coordinate === undefined) {
       return false;
     }
-    return this._x == coordinate.x && this._y == coordinate.y;
+    return this._x === coordinate.x && this._y === coordinate.y;
   }
 }

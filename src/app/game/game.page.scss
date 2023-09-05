@@ -1,13 +1,13 @@
 .container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
   width: 100%;
-  .grid-container {
-    display: flex;
-    justify-content: center;
+  .board-container {
+    flex-grow: 1;
     position: relative;
-    width: 100%;
+    max-width: calc(73vh * 0.88); // aspect ratio of the svg is 0.88;1
+    max-height: 73vh;
     app-warning {
       position: absolute;
       top: 25%;
@@ -17,26 +17,21 @@
       margin: auto;
       width: 300px;
     }
-    app-piece-list {
-      &.left {
-        margin: auto 5px auto auto;
-      }
-      &.right {
-        margin: auto auto auto 5px;
-      }
-    }
-    ::ng-deep app-piece-list svg {
-      width: 40px;
-    }
-    .grid {
-      max-height: 73vh;
-    }
+  }
+  app-info {
+    height: 73vh;
   }
 }
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
-  app-piece-list {
-    display: none;
+  .container {
+    flex-direction: column;
+    max-width: 95vw;
+    app-info {
+      margin: auto;
+      min-height: 200px;
+      max-height: calc(100vh - (95vw * (1 / 0.88)) - 164px);
+    }
   }
 }
