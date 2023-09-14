@@ -11,7 +11,7 @@
   "private": true,
   "dependencies": {
     "@ag-grid-enterprise/server-side-row-model": "^30.1.0",
-    "@angular/animations": "^16.2.1",
+    "@angular/animations": "^16.2.5",
     "@angular/cdk": "~16.2.1",
     "@angular/common": "^16.2.1",
     "@angular/compiler": "^16.2.1",
